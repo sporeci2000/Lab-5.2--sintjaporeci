@@ -11,8 +11,9 @@ const confirmPasswordError = document.getElementById("confirmPasswordError");
 
 const message = document.getElementById("registrationmessage");
 
-// Load saved username
+// Load saved username on page load
 const savedUsername = localStorage.getItem("username");
+
 if (savedUsername) {
     username.value = savedUsername;
 }
@@ -22,7 +23,10 @@ function validateConfirmPassword() {
     if (cPassword.value !== password.value) {
         confirmPasswordError.textContent = "Please make sure both passwords are the same.";
         return false;
-    } else {
+
+    }
+
+    else {
         confirmPasswordError.textContent = "";
         return true;
     }
@@ -71,8 +75,11 @@ function validateForm() {
 
 // Real-time validation on inputs
 [username, email, password, cPassword].forEach(input => {
+
     input.addEventListener("input", () => {
+
         validateInputElement(input, document.getElementById(input.id + "Error"));
+
         if (input === password || input === cPassword) {
             validateConfirmPassword();
         }
@@ -81,13 +88,17 @@ function validateForm() {
 
 // Form submission
 form.addEventListener("submit", e => {
+
     e.preventDefault();
+
     if (validateForm()) {
+
         localStorage.setItem("username", username.value);
         message.style.display = "block";
         form.reset();
-       
-    } else {
+
+    } 
+    else {
         message.style.display = "none";
     }
 });

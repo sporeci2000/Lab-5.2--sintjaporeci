@@ -18,3 +18,4 @@ I used both HTML and JavaScript validation. I wrote clear, helpful error message
 
 References:  
 https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation 
+https://www.w3schools.com/tags/att_pattern.asp 
