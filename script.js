@@ -12,10 +12,32 @@ const confirmPasswordError = document.getElementById("confirmPasswordError");
 const message = document.getElementById("registrationmessage");
 
 // Load saved username on page load
-const savedUsername = localStorage.getItem("username");
+function checkSavedUsername() {
+    const savedUsername = localStorage.getItem("username");
 
-if (savedUsername) {
-    username.value = savedUsername;
+    if (savedUsername) {
+        username.value = savedUsername;
+    }
+}
+
+checkSavedUsername();
+
+// Validate input field
+function validateInputElement(input, errorSpan) {
+    if (!input.value) {
+        errorSpan.textContent = "This field is required";
+        return false;
+    }
+
+    else if (!input.checkValidity()) {
+        errorSpan.textContent = input.validationMessage;
+        return false;
+    }
+
+    else {
+        errorSpan.textContent = "";
+        return true;
+    }
 }
 
 // Real-time validation for password
@@ -23,7 +45,6 @@ function validateConfirmPassword() {
     if (cPassword.value !== password.value) {
         confirmPasswordError.textContent = "Please make sure both passwords are the same.";
         return false;
-
     }
 
     else {
@@ -32,59 +53,48 @@ function validateConfirmPassword() {
     }
 }
 
-// Validate input field
-function validateInputElement(input, errorSpan) {
-    if (!input.value) {
-        errorSpan.textContent = "This field is required";
-        return false;
-    }
-    if (!input.checkValidity()) {
-        errorSpan.textContent = input.validationMessage;
-        return false;
-    }
-    errorSpan.textContent = "";
-    return true;
-}
+
 
 // Validate entire form before submission
 function validateForm() {
-    let valid = true;
+    let formValid = true;
 
-    if (!validateInputElement(username, unameError)) {
-        valid = false;
-    }
+    const inputFields = [
+        [username, unameError],
+        [email, emailError],
+        [password, passError],
+        [cPassword, confirmPasswordError]
+    ];
 
-    if (!validateInputElement(email, emailError)) {
-        valid = false;
-    }
+    inputFields.forEach(([input, errorSpan]) => {
 
-    if (!validateInputElement(password, passError)) {
-        valid = false;
-    }
-
-    if (!validateInputElement(cPassword, confirmPasswordError)) {
-        valid = false;
-    }
-
-    if (!validateConfirmPassword()) {
-        valid = false;
-    }
-
-    return valid;
-}
-
-// Real-time validation on inputs
-[username, email, password, cPassword].forEach(input => {
-
-    input.addEventListener("input", () => {
-
-        validateInputElement(input, document.getElementById(input.id + "Error"));
-
-        if (input === password || input === cPassword) {
-            validateConfirmPassword();
+        if (!validateInputElement(input, errorSpan)) {
+            formValid = false;
         }
     });
+
+    if (!validateConfirmPassword()) {
+        formValid = false;
+    }
+
+    return formValid;
+}
+
+
+// Real-time validation on inputs
+form.addEventListener("input", () => {
+    const inputs = [username, email, password, cPassword];
+
+    for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i];
+        const errorSpan = document.getElementById(input.id + "Error");
+        validateInputElement(input, errorSpan);
+    }
+
+    validateConfirmPassword();
 });
+
+
 
 // Form submission
 form.addEventListener("submit", e => {
@@ -97,7 +107,7 @@ form.addEventListener("submit", e => {
         message.style.display = "block";
         form.reset();
 
-    } 
+    }
     else {
         message.style.display = "none";
     }
